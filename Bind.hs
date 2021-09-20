@@ -2,12 +2,12 @@ module Bind where
 
 import Lib
 
-bind :: StateT s a -> (a -> StateT s b) -> StateT s b
+bind :: State s a -> (a -> State s b) -> State s b
 bind sa f = S $ \s ->
-  let (a, s') = runStateT sa s in runStateT (f a) s'
+  let (a, s') = runState sa s in runState (f a) s'
 
 main :: IO ()
-main = fst $ runStateT (
+main = fst $ runState (
     next `bind` \id ->
     next `bind` \id' ->
     next `bind` \id'' ->

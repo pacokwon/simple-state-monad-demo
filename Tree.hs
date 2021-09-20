@@ -2,23 +2,23 @@ module Tree where
 
 import Lib
 
-instance Functor (StateT a) where
-  -- fmap :: (a -> b) -> StateT s a -> StateT s b
+instance Functor (State a) where
+  -- fmap :: (a -> b) -> State s a -> State s b
   fmap f (S transform) = S (\s -> let (r, s') = transform s in (f r, s'))
 
-instance Applicative (StateT a) where
-  -- pure :: a -> StateT s a
+instance Applicative (State a) where
+  -- pure :: a -> State s a
   pure x = S $ \s -> (x, s)
 
-  -- (<*>) :: StateT s (a->b) -> StateT s a -> StateT s b
+  -- (<*>) :: State s (a->b) -> State s a -> State s b
   sf <*> sa = S $ \s ->
-    let (f', s') = runStateT sf s
-     in runStateT (f' `fmap` sa) s'
+    let (f', s') = runState sf s
+     in runState (f' `fmap` sa) s'
 
-instance Monad (StateT a) where
-  -- (>>=) :: StateT s a -> (a -> StateT s b) -> StateT s b
+instance Monad (State a) where
+  -- (>>=) :: State s a -> (a -> State s b) -> State s b
   (S f) >>= t = S $ \s ->
-    let (a, s') = f s in runStateT (t a) s'
+    let (a, s') = f s in runState (t a) s'
 
 data Tree a = Leaf a | Node (Tree a) (Tree a) deriving Show
 
@@ -29,7 +29,7 @@ label (Node l r) n = (Node l' r', n'')
         (l', n') = label l n
         (r', n'') = label r n'
 
-mlabel :: Tree a -> StateT Int (Tree Int)
+mlabel :: Tree a -> State Int (Tree Int)
 mlabel (Leaf v) = do
     n <- next
     return (Leaf n)
@@ -48,5 +48,5 @@ main = do
     let labeled = fst $ label testTree 0
     print labeled
     -- monad version version
-    let labeled = fst $ runStateT (mlabel testTree) 0
+    let labeled = fst $ runState (mlabel testTree) 0
     print labeled

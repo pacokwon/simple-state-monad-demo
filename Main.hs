@@ -3,25 +3,25 @@ module Main where
 import Control.Applicative
 import Lib
 
-instance Functor (StateT a) where
-  -- fmap :: (a -> b) -> StateT s a -> StateT s b
+instance Functor (State a) where
+  -- fmap :: (a -> b) -> State s a -> State s b
   fmap f (S transform) = S (\s -> let (r, s') = transform s in (f r, s'))
 
-instance Applicative (StateT a) where
-  -- pure :: a -> StateT s a
+instance Applicative (State a) where
+  -- pure :: a -> State s a
   pure x = S $ \s -> (x, s)
 
-  -- (<*>) :: StateT s (a->b) -> StateT s a -> StateT s b
+  -- (<*>) :: State s (a->b) -> State s a -> State s b
   sf <*> sa = S $ \s ->
-    let (f', s') = runStateT sf s
-     in runStateT (f' `fmap` sa) s'
+    let (f', s') = runState sf s
+     in runState (f' `fmap` sa) s'
 
-instance Monad (StateT a) where
-  -- (>>=) :: StateT s a -> (a -> StateT s b) -> StateT s b
+instance Monad (State a) where
+  -- (>>=) :: State s a -> (a -> State s b) -> State s b
   (S f) >>= t = S $ \s ->
-    let (a, s') = f s in runStateT (t a) s'
+    let (a, s') = f s in runState (t a) s'
 
-nextThree :: StateT Int (Int, Int, Int)
+nextThree :: State Int (Int, Int, Int)
 nextThree = do
   id <- next
   id' <- next
@@ -29,7 +29,7 @@ nextThree = do
   return (id, id', id'')
 
 getThreeIds :: Int -> (Int, Int, Int)
-getThreeIds start = fst $ runStateT nextThree start
+getThreeIds start = fst $ runState nextThree start
 
 main :: IO ()
 main = do

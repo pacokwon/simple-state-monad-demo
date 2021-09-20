@@ -1,6 +1,6 @@
-# Simple `StateT` Monad Demo
+# Simple `State` Monad Demo
 
-This repository contains sample files for demonstrating the workings of the `StateT` monad. Codes here were written for [my personal blog post](https://pacokwon.github.io/posts/20210911-simple-state-transformer-monad).
+This repository contains sample files for demonstrating the workings of the `State` monad. Codes here were written for [my personal blog post](https://pacokwon.github.io/posts/20210911-simple-state-monad).
 
 
 ## Directory Structure
